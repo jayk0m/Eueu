@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Caixa de Comentários</title>
+  <script type="module">
+    // Importar o Firebase
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
+    import { getDatabase, ref, set, get } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-database.js";
+
+    // Configuração do Firebase
+    const firebaseConfig = {
+      apiKey: "SUA_API_KEY",
+      authDomain: "SEU_AUTH_DOMAIN",
+      databaseURL: "SUA_DATABASE_URL",
+      projectId: "SEU_PROJECT_ID",
+      storageBucket: "SEU_STORAGE_BUCKET",
+      messagingSenderId: "SEU_MESSAGING_SENDER_ID",
+      appId: "SEU_APP_ID",
+      measurementId: "SEU_MEASUREMENT_ID"
+    };
+
+    // Inicializar o Firebase
+    const app = initializeApp(firebaseConfig);
+    const database = getDatabase(app);
+    const commentRef = ref(database, "comment");
+
+    // Função para carregar o comentário
+    function loadComment() {
+      get(commentRef).then((snapshot) => {
+        if (snapshot.exists()) {
+          const comment = snapshot.val().text || "Olá Mundo";
+          document.getElementById("displayComment").textContent = comment;
+        }
+      });
+    }
+
+    // Função para salvar o comentário
+    function saveComment(newComment) {
+      set(commentRef, { text: newComment });
+    }
+
+    // Exibir a barra de senha e permitir edição
+    function showPasswordBox() {
+      const password = prompt("Digite a senha para editar:");
+      if (password === "dd3f33") {
+        const newComment = prompt("Digite o novo comentário:");
+        if (newComment) {
+          saveComment(newComment);
+          alert("Comentário atualizado com sucesso!");
+          loadComment();
+        }
+      } else {
+        alert("Senha incorreta!");
+      }
+    }
+
+    // Carregar o comentário ao iniciar a página
+    window.onload = loadComment;
+  </script>
+</head>
+<body>
+  <h1>Comentários</h1>
+  <div>
+    <p id="displayComment">Olá Mundo</p>
+    <img src="sua-imagem.jpg" alt="Imagem" onclick="showPasswordBox()" style="cursor: pointer;">
+  </div>
+</body>
+</html>
